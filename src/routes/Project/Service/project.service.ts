@@ -52,13 +52,13 @@ export class ProjectService {
   }
 
   async createProject(data: CreateProject): Promise<Project> {
-    const clientId = crypto.randomUUID();
-    const secret = crypto.randomBytes(32).toString('hex');
-
+    const clientId = crypto.randomBytes(64).toString('hex');
+    const secret = crypto.randomBytes(64).toString('hex');
     const clientSecret = await bcrypt.hash(secret, 10);
 
-    const projectData = { ...data, clientId, clientSecret };
-    await this.prisma.project.create({ data: projectData });
+    await this.prisma.project.create({
+      data: { ...data, clientSecret, clientId },
+    });
 
     return { ...data, clientSecret: secret } as Project;
   }

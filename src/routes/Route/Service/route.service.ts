@@ -78,7 +78,7 @@ export class RouteService {
     }
 
     if (data.path) {
-      Object.assign({ ...data, path: this.normalizePath(data.path) });
+      Object.assign(data, { ...data, path: this.normalizePath(data.path) });
     }
 
     const updateRoute = this.prisma.route.update({

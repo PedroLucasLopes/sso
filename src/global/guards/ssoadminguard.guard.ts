@@ -8,6 +8,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { JwtPayload } from '../dto/jwtPayload.dto';
 import { Reflector } from '@nestjs/core';
+import {
+  SSO_LEVEL_ADMIN,
+  SSO_LEVEL_PUBLIC,
+} from '../constants/ssoLevel.constant';
 
 @Injectable()
 export class SSOAdminGuard implements CanActivate {
@@ -20,7 +24,7 @@ export class SSOAdminGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
 
     const isPublic = this.reflector.getAllAndOverride<boolean>(
-      process.env.SSO_LEVEL_PUBLIC,
+      SSO_LEVEL_PUBLIC,
       [context.getHandler(), context.getClass()],
     );
 
@@ -29,7 +33,7 @@ export class SSOAdminGuard implements CanActivate {
     const clientSecret = request.headers['x-sso-secret'];
 
     const isAdminRoute = this.reflector.getAllAndOverride<boolean>(
-      process.env.SSO_LEVEL_ADMIN,
+      SSO_LEVEL_ADMIN,
       [context.getHandler(), context.getClass()],
     );
 

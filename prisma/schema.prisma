@@ -10,18 +10,21 @@ datasource db {
 
 model User {
   id           String        @id @default(uuid())
-  email        String
+  email        String        @unique
   name         String
+  authId       String?       @unique
   projectUsers ProjectUser[]
 }
 
 model Project {
-  id           String        @id @default(uuid())
-  name         String
-  clientId     String        @unique
-  clientSecret String
-  projectUsers ProjectUser[]
-  routes       Route[]
+  id                  String        @id @default(uuid())
+  name                String
+  clientId            String        @unique
+  clientSecret        String
+  allowedRedirectUris String[]
+  createdAt           DateTime      @default(now())
+  projectUsers        ProjectUser[]
+  routes              Route[]
 }
 
 model Route {
