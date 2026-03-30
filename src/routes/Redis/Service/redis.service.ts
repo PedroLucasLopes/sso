@@ -1,8 +1,14 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { PkceSession } from '../dto/pkceSession.dto';
 import { Login } from '../dto/login.dto';
+import { GetLogin } from '../dto/getLogin.dto';
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
@@ -57,9 +63,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     );
   }
 
-  async getAuthCode(code: string): Promise<Login | null> {
+  async getAuthCode(code: string): Promise<GetLogin> {
     const raw = (await this.client.get(`authcode:${code}`)) as string;
-    return (JSON.parse(raw) as Login) ?? null;
+
+    if (JSON.parse(raw) === null) {
+      throw new NotFoundException('Authcode not found');
+    }
+
+    return JSON.parse(raw) as GetLogin;
   }
 
   async deleteAuthCode(code: string): Promise<void> {

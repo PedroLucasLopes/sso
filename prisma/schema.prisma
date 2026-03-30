@@ -17,14 +17,23 @@ model User {
 }
 
 model Project {
-  id                  String        @id @default(uuid())
-  name                String
-  clientId            String        @unique
-  clientSecret        String
-  allowedRedirectUris String[]
-  createdAt           DateTime      @default(now())
-  projectUsers        ProjectUser[]
-  routes              Route[]
+  id           String        @id @default(uuid())
+  name         String
+  clientId     String        @unique
+  clientSecret String
+  createdAt    DateTime      @default(now())
+  projectUsers ProjectUser[]
+  routes       Route[]
+  redirectUris redirectUri[]
+}
+
+model redirectUri {
+  id          String  @id @default(uuid())
+  redirectUri String
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
 }
 
 model Route {

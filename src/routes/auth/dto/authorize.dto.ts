@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class Authorize {
   @IsString()
   @IsNotEmpty()
   client_id: string;
 
-  @IsUrl()
+  @IsString()
   @IsNotEmpty()
   redirect_uri: string;
 

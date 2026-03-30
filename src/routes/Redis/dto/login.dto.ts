@@ -11,7 +11,7 @@ export class Login {
 
   @IsString()
   @IsNotEmpty()
-  challenge: string;
+  codeChallenge: string;
 
   @IsString()
   @IsNotEmpty()
