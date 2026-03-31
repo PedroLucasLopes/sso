@@ -9,7 +9,6 @@ import { PrismaService } from 'src/global/prisma/prisma.service';
 import { CreateProject } from '../dto/createProject.dto';
 import { FilterProject } from '../dto/filterProject.dto';
 import { EditProject } from '../dto/editProject.dto';
-import * as bcrypt from 'bcrypt';
 import * as crypto from 'node:crypto';
 
 @Injectable()
@@ -53,14 +52,12 @@ export class ProjectService {
 
   async createProject(data: CreateProject): Promise<Project> {
     const clientId = crypto.randomBytes(64).toString('hex');
-    const secret = crypto.randomBytes(64).toString('hex');
-    const clientSecret = await bcrypt.hash(secret, 10);
 
     await this.prisma.project.create({
-      data: { ...data, clientSecret, clientId },
+      data: { ...data, clientId },
     });
 
-    return { ...data, clientSecret: secret } as Project;
+    return data as Project;
   }
 
   async updateProject(id: string, data: EditProject): Promise<Project> {

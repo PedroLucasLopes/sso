@@ -73,7 +73,7 @@ export class AuthController {
   async token(@Body() body: Token): Promise<{
     access_token: string;
     token_type: 'Bearer';
-    expires_in: number;
+    expires_in: string;
   }> {
     return this.authService.exchangeCodeForToken(body);
   }

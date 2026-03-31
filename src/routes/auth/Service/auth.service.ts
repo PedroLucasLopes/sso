@@ -12,6 +12,7 @@ import { Authorize } from '../dto/authorize.dto';
 import * as crypto from 'node:crypto';
 import { Token } from '../dto/token.dto';
 import { JwtPayload } from '../dto/jwtPayload.dto';
+import { StringValue } from 'ms';
 
 @Injectable()
 export class AuthService {
@@ -106,7 +107,7 @@ export class AuthService {
   async exchangeCodeForToken(token: Token): Promise<{
     access_token: string;
     token_type: 'Bearer';
-    expires_in: number;
+    expires_in: string;
   }> {
     if (token.grant_type !== 'authorization_code') {
       throw new BadRequestException('granty_type must be "authorization_code"');
@@ -160,7 +161,7 @@ export class AuthService {
       method: p.route.method,
     }));
 
-    const expiresIn = this.config.get<number>('JWT_EXPIRES_IN', 3600);
+    const expiresIn = this.config.get<string>('JWT_EXPIRES_IN', '15d');
 
     const payload: JwtPayload = {
       sub: data.userId,
@@ -172,9 +173,15 @@ export class AuthService {
 
     await this.redis.deleteAuthCode(token.code);
 
-    const access_token = this.jwt.sign(payload, { expiresIn });
+    const access_token = this.jwt.sign(payload, {
+      expiresIn,
+    } as { expiresIn: StringValue });
 
-    return { access_token, token_type: 'Bearer', expires_in: expiresIn };
+    return {
+      access_token,
+      token_type: 'Bearer',
+      expires_in: expiresIn,
+    };
   }
 
   private async getProjecIdByClientId(clientId: string) {

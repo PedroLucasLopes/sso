@@ -20,7 +20,6 @@ model Project {
   id           String        @id @default(uuid())
   name         String
   clientId     String        @unique
-  clientSecret String
   createdAt    DateTime      @default(now())
   projectUsers ProjectUser[]
   routes       Route[]
